@@ -10,7 +10,7 @@ from src.utils.api_key import get_api_key_from_state
 from src.utils.progress import progress
 
 
-##### Sentiment Agent #####
+# Sentiment Agent
 def sentiment_analyst_agent(state: AgentState, agent_id: str = "sentiment_analyst_agent"):
     """Analyzes market sentiment and generates trading signals for multiple tickers."""
     data = state.get("data", {})
@@ -44,14 +44,16 @@ def sentiment_analyst_agent(state: AgentState, agent_id: str = "sentiment_analys
 
         # Get the sentiment from the company news
         sentiment = pd.Series([n.sentiment for n in company_news]).dropna()
-        news_signals = np.where(sentiment == "negative", "bearish", 
-                              np.where(sentiment == "positive", "bullish", "neutral")).tolist()
-        
+        news_signals = np.where(
+            sentiment == "negative", "bearish",
+            np.where(sentiment == "positive", "bullish", "neutral")
+        ).tolist()
+
         progress.update_status(agent_id, ticker, "Combining signals")
         # Combine signals from both sources with weights
         insider_weight = 0.3
         news_weight = 0.7
-        
+
         # Calculate weighted signal counts
         bullish_signals = (
             insider_signals.count("bullish") * insider_weight +
@@ -74,13 +76,19 @@ def sentiment_analyst_agent(state: AgentState, agent_id: str = "sentiment_analys
         confidence = 0  # Default confidence when there are no signals
         if total_weighted_signals > 0:
             confidence = round((max(bullish_signals, bearish_signals) / total_weighted_signals) * 100, 2)
-        
+
         # Create structured reasoning similar to technical analysis
         reasoning = {
             "insider_trading": {
-                "signal": "bullish" if insider_signals.count("bullish") > insider_signals.count("bearish") else 
-                         "bearish" if insider_signals.count("bearish") > insider_signals.count("bullish") else "neutral",
-                "confidence": round((max(insider_signals.count("bullish"), insider_signals.count("bearish")) / max(len(insider_signals), 1)) * 100),
+                "signal": (
+                    "bullish" if insider_signals.count("bullish") > insider_signals.count("bearish")
+                    else "bearish" if insider_signals.count("bearish") > insider_signals.count("bullish")
+                    else "neutral"
+                ),
+                "confidence": round(
+                    (max(insider_signals.count("bullish"), insider_signals.count("bearish"))
+                     / max(len(insider_signals), 1)) * 100
+                ),
                 "metrics": {
                     "total_trades": len(insider_signals),
                     "bullish_trades": insider_signals.count("bullish"),
@@ -91,9 +99,15 @@ def sentiment_analyst_agent(state: AgentState, agent_id: str = "sentiment_analys
                 }
             },
             "news_sentiment": {
-                "signal": "bullish" if news_signals.count("bullish") > news_signals.count("bearish") else 
-                         "bearish" if news_signals.count("bearish") > news_signals.count("bullish") else "neutral",
-                "confidence": round((max(news_signals.count("bullish"), news_signals.count("bearish")) / max(len(news_signals), 1)) * 100),
+                "signal": (
+                    "bullish" if news_signals.count("bullish") > news_signals.count("bearish")
+                    else "bearish" if news_signals.count("bearish") > news_signals.count("bullish")
+                    else "neutral"
+                ),
+                "confidence": round(
+                    (max(news_signals.count("bullish"), news_signals.count("bearish"))
+                     / max(len(news_signals), 1)) * 100
+                ),
                 "metrics": {
                     "total_articles": len(news_signals),
                     "bullish_articles": news_signals.count("bullish"),
@@ -107,7 +121,11 @@ def sentiment_analyst_agent(state: AgentState, agent_id: str = "sentiment_analys
             "combined_analysis": {
                 "total_weighted_bullish": round(bullish_signals, 1),
                 "total_weighted_bearish": round(bearish_signals, 1),
-                "signal_determination": f"{'Bullish' if bullish_signals > bearish_signals else 'Bearish' if bearish_signals > bullish_signals else 'Neutral'} based on weighted signal comparison"
+                "signal_determination": (
+                    "Bullish" if bullish_signals > bearish_signals
+                    else "Bearish" if bearish_signals > bullish_signals
+                    else "Neutral"
+                ) + " based on weighted signal comparison"
             }
         }
 

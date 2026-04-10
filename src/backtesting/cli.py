@@ -99,7 +99,9 @@ def main() -> int:
             return 1
         model_provider = ModelProvider.OLLAMA.value
         print(
-            f"\nSelected {Fore.CYAN}Ollama{Style.RESET_ALL} model: {Fore.GREEN + Style.BRIGHT}{model_name}{Style.RESET_ALL}\n"
+            f"\nSelected {Fore.CYAN}Ollama{Style.RESET_ALL} model:"
+            f" {Fore.GREEN + Style.BRIGHT}{model_name}"
+            f"{Style.RESET_ALL}\n"
         )
     else:
         model_choice = questionary.select(
@@ -125,7 +127,9 @@ def main() -> int:
                 print("\n\nInterrupt received. Exiting...")
                 return 1
         print(
-            f"\nSelected {Fore.CYAN}{model_provider}{Style.RESET_ALL} model: {Fore.GREEN + Style.BRIGHT}{model_name}{Style.RESET_ALL}\n"
+            f"\nSelected {Fore.CYAN}{model_provider}{Style.RESET_ALL}"
+            f" model: {Fore.GREEN + Style.BRIGHT}{model_name}"
+            f"{Style.RESET_ALL}\n"
         )
 
     engine = BacktestEngine(
@@ -166,7 +170,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-
-

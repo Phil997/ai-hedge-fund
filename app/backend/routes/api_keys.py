@@ -142,7 +142,7 @@ async def deactivate_api_key(provider: str, db: Session = Depends(get_db)):
         success = repo.deactivate_api_key(provider)
         if not success:
             raise HTTPException(status_code=404, detail="API key not found")
-        
+
         # Return the updated key
         api_key = repo.get_api_key_by_provider(provider)
         return ApiKeySummaryResponse.from_orm(api_key)
@@ -198,4 +198,4 @@ async def update_last_used(provider: str, db: Session = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to update last used timestamp: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Failed to update last used timestamp: {str(e)}")

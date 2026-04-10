@@ -21,9 +21,13 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     # Create API keys table
-    op.create_table('api_keys',
+    op.create_table(
+        'api_keys',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+        sa.Column(
+            'created_at', sa.DateTime(timezone=True),
+            server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True
+        ),
         sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
         sa.Column('provider', sa.String(length=100), nullable=False),
         sa.Column('key_value', sa.Text(), nullable=False),
@@ -41,4 +45,4 @@ def downgrade() -> None:
     """Downgrade schema."""
     op.drop_index(op.f('ix_api_keys_provider'), table_name='api_keys')
     op.drop_index(op.f('ix_api_keys_id'), table_name='api_keys')
-    op.drop_table('api_keys') 
+    op.drop_table('api_keys')

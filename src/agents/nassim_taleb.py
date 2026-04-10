@@ -322,7 +322,9 @@ def analyze_antifragility(metrics: list, line_items: list, market_cap: float | N
 
         if cv < 0.15 and mean_margin > 0.15:
             score += 3
-            reasoning.append(f"Stable high margins (avg {mean_margin:.1%}, CV {cv:.2f}) — antifragile pricing power")
+            reasoning.append(
+                f"Stable high margins (avg {mean_margin:.1%}, CV {cv:.2f}) — antifragile pricing power"
+            )
         elif cv < 0.30 and mean_margin > 0.10:
             score += 2
             reasoning.append(f"Reasonable margin stability (avg {mean_margin:.1%}, CV {cv:.2f})")
@@ -544,7 +546,9 @@ def analyze_skin_in_game(insider_trades: list) -> dict[str, any]:
         buy_sell_ratio = net / max(shares_sold, 1)
         if buy_sell_ratio > 2.0:
             score = 4
-            reasoning.append(f"Strong skin in the game — net insider buying {net:,} shares (ratio {buy_sell_ratio:.1f}x)")
+            reasoning.append(
+                f"Strong skin in the game — net insider buying {net:,} shares (ratio {buy_sell_ratio:.1f}x)"
+            )
         elif buy_sell_ratio > 0.5:
             score = 3
             reasoning.append(f"Moderate insider conviction — net buying {net:,} shares")
@@ -610,7 +614,10 @@ def analyze_volatility_regime(prices_df: pd.DataFrame) -> dict[str, any]:
             if median_vov > 0:
                 if current_vov > 2 * median_vov:
                     score += 2
-                    reasoning.append(f"Highly unstable vol (vol-of-vol {current_vov:.4f} vs median {median_vov:.4f}) — regime change likely")
+                    reasoning.append(
+                        f"Highly unstable vol (vol-of-vol {current_vov:.4f}"
+                        f" vs median {median_vov:.4f}) — regime change likely"
+                    )
                 elif current_vov > median_vov:
                     score += 1
                     reasoning.append(f"Elevated vol-of-vol ({current_vov:.4f} vs median {median_vov:.4f})")
@@ -661,7 +668,9 @@ def analyze_black_swan_sentinel(news: list, prices_df: pd.DataFrame) -> dict[str
         reasoning.append(f"Elevated stress signals (neg news {neg_ratio:.0%}, volume {volume_spike:.1f}x)")
     elif neg_ratio > 0.3 and abs(recent_return) > 0.10:
         score = 1
-        reasoning.append(f"Moderate stress with price dislocation ({recent_return:.1%} move, {neg_ratio:.0%} negative news)")
+        reasoning.append(
+            f"Moderate stress with price dislocation ({recent_return:.1%} move, {neg_ratio:.0%} negative news)"
+        )
     elif neg_ratio < 0.3 and volume_spike < 1.5:
         score = 3
         reasoning.append("No black swan signals detected")
@@ -728,7 +737,8 @@ def generate_taleb_output(
                 "- 30-49%: Some fragility detected, weak insider alignment\n"
                 "- 10-29%: Clearly fragile or dangerous vol regime\n"
                 "\n"
-                "Use Taleb's vocabulary: antifragile, convexity, skin in the game, via negativa, barbell, turkey problem, Lindy effect.\n"
+                "Use Taleb's vocabulary: antifragile, convexity, skin in the game, via negativa, "
+                "barbell, turkey problem, Lindy effect.\n"
                 "Keep reasoning under 150 characters. Do not invent data. Return JSON only.",
             ),
             (

@@ -49,4 +49,3 @@ def test_metrics_zero_volatility_sharpe_zero():
     metrics = {"sharpe_ratio": None, "sortino_ratio": None, "max_drawdown": None}
     calc.update_metrics(metrics, vals)
     assert metrics["sharpe_ratio"] == 0.0
-

@@ -15,6 +15,7 @@ from src.tools.api import (
 from app.backend.services.graph import run_graph_async, parse_hedge_fund_response
 from app.backend.services.portfolio import create_portfolio
 
+
 class BacktestService:
     """
     Core backtesting service that focuses purely on backtesting logic.
@@ -35,7 +36,7 @@ class BacktestService:
     ):
         """
         Initialize the backtest service.
-        
+
         :param graph: Pre-compiled LangGraph graph for trading decisions.
         :param portfolio: Initial portfolio state.
         :param tickers: List of tickers to backtest.
@@ -358,7 +359,7 @@ class BacktestService:
                 tickers=self.tickers,
                 portfolio_positions=[]  # We'll handle positions manually
             )
-            
+
             # Copy current portfolio state to the graph portfolio
             portfolio_for_graph.update(self.portfolio)
 
@@ -374,7 +375,7 @@ class BacktestService:
                     model_provider=self.model_provider,
                     request=self.request,
                 )
-                
+
                 # Parse the decisions from the graph result
                 if result and result.get("messages"):
                     decisions = parse_hedge_fund_response(result["messages"][-1].content)
@@ -382,7 +383,7 @@ class BacktestService:
                 else:
                     decisions = {}
                     analyst_signals = {}
-                    
+
             except Exception as e:
                 print(f"Error running graph for {current_date_str}: {e}")
                 decisions = {}
@@ -419,7 +420,7 @@ class BacktestService:
 
             # Calculate performance metrics for this day
             portfolio_return = (total_value / self.initial_capital - 1) * 100
-            
+
             # Update performance metrics if we have enough data
             if len(self.portfolio_values) > 2:
                 self._update_performance_metrics(performance_metrics)
@@ -478,7 +479,7 @@ class BacktestService:
                     "bearish_count": bearish_count,
                     "neutral_count": neutral_count,
                 }
-                
+
                 date_result["ticker_details"].append(ticker_detail)
 
             backtest_results.append(date_result)
@@ -535,5 +536,5 @@ class BacktestService:
 
         # Calculate additional metrics
         performance_df["Daily Return"] = performance_df["Portfolio Value"].pct_change().fillna(0)
-        
-        return performance_df 
+
+        return performance_df

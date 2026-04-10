@@ -15,7 +15,10 @@ def test_results_builder_builds_rows_and_summary(monkeypatch, portfolio):
             kwargs.get("is_summary", False),
             kwargs.get("total_value"),
         ))
-        return [kwargs.get("date"), kwargs.get("ticker"), kwargs.get("action"), kwargs.get("quantity")]  # minimal row shape
+        return [
+            kwargs.get("date"), kwargs.get("ticker"),
+            kwargs.get("action"), kwargs.get("quantity"),
+        ]  # minimal row shape
 
     printed = {"called": False, "rows": None}
 
@@ -54,4 +57,3 @@ def test_results_builder_builds_rows_and_summary(monkeypatch, portfolio):
     assert len(printed["rows"]) == 2
     # The captured tuples include a summary row with total_value
     assert any(r[5] and r[6] == 100_000.0 for r in rows_captured)
-

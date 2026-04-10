@@ -52,7 +52,6 @@ def compute_exposures(portfolio: Portfolio, current_prices: Mapping[str, float])
     }
 
 
-
 def compute_portfolio_summary(
     *,
     portfolio: Portfolio,
@@ -81,4 +80,3 @@ def compute_portfolio_summary(
         "sortino_ratio": performance_metrics.get("sortino_ratio"),
         "max_drawdown": performance_metrics.get("max_drawdown"),
     }
-

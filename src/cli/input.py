@@ -50,7 +50,11 @@ def add_common_args(
     return parser
 
 
-def add_date_args(parser: argparse.ArgumentParser, *, default_months_back: int | None = None) -> argparse.ArgumentParser:
+def add_date_args(
+    parser: argparse.ArgumentParser,
+    *,
+    default_months_back: int | None = None,
+) -> argparse.ArgumentParser:
     if default_months_back is None:
         parser.add_argument("--start-date", type=str, help="Start date (YYYY-MM-DD)")
         parser.add_argument("--end-date", type=str, help="End date (YYYY-MM-DD)")
@@ -85,8 +89,15 @@ def select_analysts(flags: dict | None = None) -> list[str]:
 
     choices = questionary.checkbox(
         "Select your AI analysts.",
-        choices=[questionary.Choice(display, value=value) for display, value in ANALYST_ORDER],
-        instruction="\n\nInstructions: \n1. Press Space to select/unselect analysts.\n2. Press 'a' to select/unselect all.\n3. Press Enter when done.",
+        choices=[
+            questionary.Choice(display, value=value)
+            for display, value in ANALYST_ORDER
+        ],
+        instruction=(
+            "\n\nInstructions: \n1. Press Space to select/unselect analysts."
+            "\n2. Press 'a' to select/unselect all."
+            "\n3. Press Enter when done."
+        ),
         validate=lambda x: len(x) > 0 or "You must select at least one analyst.",
         style=questionary.Style(
             [
@@ -103,7 +114,12 @@ def select_analysts(flags: dict | None = None) -> list[str]:
         sys.exit(0)
 
     print(
-        f"\nSelected analysts: {', '.join(Fore.GREEN + c.title().replace('_', ' ') + Style.RESET_ALL for c in choices)}\n"
+        "\nSelected analysts: "
+        + ", ".join(
+            Fore.GREEN + c.title().replace("_", " ") + Style.RESET_ALL
+            for c in choices
+        )
+        + "\n"
     )
     return choices
 
@@ -116,7 +132,10 @@ def select_model(use_ollama: bool, model_flag: str | None = None) -> tuple[str, 
         model = find_model_by_name(model_flag)
         if model:
             print(
-                f"\nUsing specified model: {Fore.CYAN}{model.provider.value}{Style.RESET_ALL} - {Fore.GREEN + Style.BRIGHT}{model.model_name}{Style.RESET_ALL}\n"
+                f"\nUsing specified model:"
+                f" {Fore.CYAN}{model.provider.value}{Style.RESET_ALL}"
+                f" - {Fore.GREEN + Style.BRIGHT}{model.model_name}"
+                f"{Style.RESET_ALL}\n"
             )
             return model.model_name, model.provider.value
         else:
@@ -153,12 +172,17 @@ def select_model(use_ollama: bool, model_flag: str | None = None) -> tuple[str, 
 
         model_provider = ModelProvider.OLLAMA.value
         print(
-            f"\nSelected {Fore.CYAN}Ollama{Style.RESET_ALL} model: {Fore.GREEN + Style.BRIGHT}{model_name}{Style.RESET_ALL}\n"
+            f"\nSelected {Fore.CYAN}Ollama{Style.RESET_ALL} model:"
+            f" {Fore.GREEN + Style.BRIGHT}{model_name}"
+            f"{Style.RESET_ALL}\n"
         )
     else:
         model_choice = questionary.select(
             "Select your LLM model:",
-            choices=[questionary.Choice(display, value=(name, provider)) for display, name, provider in LLM_ORDER],
+            choices=[
+                questionary.Choice(display, value=(name, provider))
+                for display, name, provider in LLM_ORDER
+            ],
             style=questionary.Style(
                 [
                     ("selected", "fg:green bold"),
@@ -184,7 +208,9 @@ def select_model(use_ollama: bool, model_flag: str | None = None) -> tuple[str, 
 
         if model_info:
             print(
-                f"\nSelected {Fore.CYAN}{model_provider}{Style.RESET_ALL} model: {Fore.GREEN + Style.BRIGHT}{model_name}{Style.RESET_ALL}\n"
+                f"\nSelected {Fore.CYAN}{model_provider}{Style.RESET_ALL}"
+                f" model: {Fore.GREEN + Style.BRIGHT}{model_name}"
+                f"{Style.RESET_ALL}\n"
             )
         else:
             model_provider = "Unknown"
@@ -193,7 +219,12 @@ def select_model(use_ollama: bool, model_flag: str | None = None) -> tuple[str, 
     return model_name, model_provider or ""
 
 
-def resolve_dates(start_date: str | None, end_date: str | None, *, default_months_back: int | None = None) -> tuple[str, str]:
+def resolve_dates(
+    start_date: str | None,
+    end_date: str | None,
+    *,
+    default_months_back: int | None = None,
+) -> tuple[str, str]:
     if start_date:
         try:
             datetime.strptime(start_date, "%Y-%m-%d")
@@ -274,8 +305,14 @@ def parse_cli_inputs(
         "analysts_all": getattr(args, "analysts_all", False),
         "analysts": getattr(args, "analysts", None),
     })
-    model_name, model_provider = select_model(getattr(args, "ollama", False), getattr(args, "model", None))
-    start_date, end_date = resolve_dates(getattr(args, "start_date", None), getattr(args, "end_date", None), default_months_back=default_months_back)
+    model_name, model_provider = select_model(
+        getattr(args, "ollama", False), getattr(args, "model", None)
+    )
+    start_date, end_date = resolve_dates(
+        getattr(args, "start_date", None),
+        getattr(args, "end_date", None),
+        default_months_back=default_months_back,
+    )
 
     return CLIInputs(
         tickers=tickers,
@@ -290,5 +327,3 @@ def parse_cli_inputs(
         show_agent_graph=getattr(args, "show_agent_graph", False),
         raw_args=args,
     )
-
-

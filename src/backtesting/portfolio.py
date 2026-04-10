@@ -192,4 +192,3 @@ class Portfolio:
             position["short_cost_basis"] = 0.0
             position["short_margin_used"] = 0.0
         return quantity
-

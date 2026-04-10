@@ -99,7 +99,10 @@ class TestFinancialMetricsCache:
     def test_deduplicates_by_report_period(self):
         cache = Cache()
         cache.set_financial_metrics("AAPL", [{"report_period": "2024-Q1", "revenue": 1000}])
-        cache.set_financial_metrics("AAPL", [{"report_period": "2024-Q1", "revenue": 9999}, {"report_period": "2024-Q2", "revenue": 1100}])
+        cache.set_financial_metrics("AAPL", [
+            {"report_period": "2024-Q1", "revenue": 9999},
+            {"report_period": "2024-Q2", "revenue": 1100},
+        ])
         result = cache.get_financial_metrics("AAPL")
         assert len(result) == 2
 
@@ -116,7 +119,10 @@ class TestLineItemsCache:
     def test_deduplicates_by_report_period(self):
         cache = Cache()
         cache.set_line_items("AAPL", [{"report_period": "2024-Q1", "total_revenue": 5000}])
-        cache.set_line_items("AAPL", [{"report_period": "2024-Q1", "total_revenue": 9999}, {"report_period": "2024-Q2", "total_revenue": 5500}])
+        cache.set_line_items("AAPL", [
+            {"report_period": "2024-Q1", "total_revenue": 9999},
+            {"report_period": "2024-Q2", "total_revenue": 5500},
+        ])
         result = cache.get_line_items("AAPL")
         assert len(result) == 2
 
@@ -133,7 +139,10 @@ class TestInsiderTradesCache:
     def test_deduplicates_by_filing_date(self):
         cache = Cache()
         cache.set_insider_trades("AAPL", [{"filing_date": "2024-01-15", "shares": 1000}])
-        cache.set_insider_trades("AAPL", [{"filing_date": "2024-01-15", "shares": 9999}, {"filing_date": "2024-02-15", "shares": 500}])
+        cache.set_insider_trades("AAPL", [
+            {"filing_date": "2024-01-15", "shares": 9999},
+            {"filing_date": "2024-02-15", "shares": 500},
+        ])
         result = cache.get_insider_trades("AAPL")
         assert len(result) == 2
         assert result[0]["shares"] == 1000  # original preserved
@@ -151,7 +160,10 @@ class TestCompanyNewsCache:
     def test_deduplicates_by_date(self):
         cache = Cache()
         cache.set_company_news("AAPL", [{"date": "2024-01-01", "title": "Earnings Beat"}])
-        cache.set_company_news("AAPL", [{"date": "2024-01-01", "title": "Duplicate"}, {"date": "2024-01-02", "title": "New Product"}])
+        cache.set_company_news("AAPL", [
+            {"date": "2024-01-01", "title": "Duplicate"},
+            {"date": "2024-01-02", "title": "New Product"},
+        ])
         result = cache.get_company_news("AAPL")
         assert len(result) == 2
         assert result[0]["title"] == "Earnings Beat"  # original preserved

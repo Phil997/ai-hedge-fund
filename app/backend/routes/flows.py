@@ -5,9 +5,9 @@ from typing import List
 from app.backend.database import get_db
 from app.backend.repositories.flow_repository import FlowRepository
 from app.backend.models.schemas import (
-    FlowCreateRequest, 
-    FlowUpdateRequest, 
-    FlowResponse, 
+    FlowCreateRequest,
+    FlowUpdateRequest,
+    FlowResponse,
     FlowSummaryResponse,
     ErrorResponse
 )
@@ -171,4 +171,4 @@ async def search_flows(name: str, db: Session = Depends(get_db)):
         flows = repo.get_flows_by_name(name)
         return [FlowSummaryResponse.from_orm(flow) for flow in flows]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to search flows: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Failed to search flows: {str(e)}")

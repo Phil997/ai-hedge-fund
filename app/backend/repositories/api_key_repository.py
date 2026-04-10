@@ -7,21 +7,21 @@ from app.backend.database.models import ApiKey
 
 class ApiKeyRepository:
     """Repository for API key database operations"""
-    
+
     def __init__(self, db: Session):
         self.db = db
 
     def create_or_update_api_key(
-        self, 
-        provider: str, 
-        key_value: str, 
-        description: str = None, 
+        self,
+        provider: str,
+        key_value: str,
+        description: str = None,
         is_active: bool = True
     ) -> ApiKey:
         """Create a new API key or update existing one"""
         # Check if API key already exists for this provider
         existing_key = self.db.query(ApiKey).filter(ApiKey.provider == provider).first()
-        
+
         if existing_key:
             # Update existing key
             existing_key.key_value = key_value
@@ -48,21 +48,21 @@ class ApiKeyRepository:
         """Get API key by provider name"""
         return self.db.query(ApiKey).filter(
             ApiKey.provider == provider,
-            ApiKey.is_active == True
+            ApiKey.is_active.is_(True)
         ).first()
 
     def get_all_api_keys(self, include_inactive: bool = False) -> List[ApiKey]:
         """Get all API keys"""
         query = self.db.query(ApiKey)
         if not include_inactive:
-            query = query.filter(ApiKey.is_active == True)
+            query = query.filter(ApiKey.is_active.is_(True))
         return query.order_by(ApiKey.provider).all()
 
     def update_api_key(
-        self, 
-        provider: str, 
-        key_value: str = None, 
-        description: str = None, 
+        self,
+        provider: str,
+        key_value: str = None,
+        description: str = None,
         is_active: bool = None
     ) -> Optional[ApiKey]:
         """Update an existing API key"""
@@ -76,7 +76,7 @@ class ApiKeyRepository:
             api_key.description = description
         if is_active is not None:
             api_key.is_active = is_active
-        
+
         api_key.updated_at = func.now()
         self.db.commit()
         self.db.refresh(api_key)
@@ -87,7 +87,7 @@ class ApiKeyRepository:
         api_key = self.db.query(ApiKey).filter(ApiKey.provider == provider).first()
         if not api_key:
             return False
-        
+
         self.db.delete(api_key)
         self.db.commit()
         return True
@@ -97,7 +97,7 @@ class ApiKeyRepository:
         api_key = self.db.query(ApiKey).filter(ApiKey.provider == provider).first()
         if not api_key:
             return False
-        
+
         api_key.is_active = False
         api_key.updated_at = func.now()
         self.db.commit()
@@ -107,11 +107,11 @@ class ApiKeyRepository:
         """Update the last_used timestamp for an API key"""
         api_key = self.db.query(ApiKey).filter(
             ApiKey.provider == provider,
-            ApiKey.is_active == True
+            ApiKey.is_active.is_(True)
         ).first()
         if not api_key:
             return False
-        
+
         api_key.last_used = func.now()
         self.db.commit()
         return True
@@ -127,4 +127,4 @@ class ApiKeyRepository:
                 is_active=data.get('is_active', True)
             )
             results.append(api_key)
-        return results 
+        return results

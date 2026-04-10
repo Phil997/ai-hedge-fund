@@ -78,7 +78,7 @@ class BaseHedgeFundRequest(BaseModel):
         if self.agent_models:
             # Extract base agent key from unique node ID for matching
             base_agent_key = extract_base_agent_key(agent_id)
-            
+
             for config in self.agent_models:
                 # Check both unique node ID and base agent key for matches
                 config_base_key = extract_base_agent_key(config.agent_id)

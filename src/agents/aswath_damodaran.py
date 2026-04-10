@@ -29,10 +29,10 @@ def aswath_damodaran_agent(state: AgentState, agent_id: str = "aswath_damodaran_
       • Cross-check with relative valuation (PE vs. Fwd PE sector median proxy)
     Produces a trading signal and explanation in Damodaran's analytical voice.
     """
-    data      = state["data"]
-    end_date  = data["end_date"]
-    tickers   = data["tickers"]
-    api_key  = get_api_key_from_state(state, "FINANCIAL_DATASETS_API_KEY")
+    data = state["data"]
+    end_date = data["end_date"]
+    tickers = data["tickers"]
+    api_key = get_api_key_from_state(state, "FINANCIAL_DATASETS_API_KEY")
 
     analysis_data: dict[str, dict] = {}
     damodaran_signals: dict[str, dict] = {}
@@ -270,7 +270,7 @@ def analyze_relative_valuation(metrics: list) -> dict[str, any]:
     elif ttm_pe > 1.3 * median_pe:
         score, desc = -1, f"P/E {ttm_pe:.1f} vs. median {median_pe:.1f} (expensive)"
     else:
-        score, desc = 0, f"P/E inline with history"
+        score, desc = 0, "P/E inline with history"
 
     return {"score": score, "max_score": max_score, "details": desc}
 

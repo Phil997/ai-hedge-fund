@@ -34,7 +34,7 @@ def parse_hedge_fund_response(response):
         return None
 
 
-##### Run the Hedge Fund #####
+# Run the Hedge Fund
 def run_hedge_fund(
     tickers: list[str],
     start_date: str,

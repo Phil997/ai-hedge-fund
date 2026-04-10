@@ -91,7 +91,11 @@ def test_long_short_strategy_full_liquidation_to_cash():
 
     decision_sequence = [
         # Day 1: Open mixed book
-        {"AAPL": {"action": "buy", "quantity": 50}, "MSFT": {"action": "short", "quantity": 25}, "TSLA": {"action": "buy", "quantity": 30}},
+        {
+            "AAPL": {"action": "buy", "quantity": 50},
+            "MSFT": {"action": "short", "quantity": 25},
+            "TSLA": {"action": "buy", "quantity": 30},
+        },
         # Day 2: Hold
         {},
         # Day 3: Exit longs
@@ -308,5 +312,3 @@ def test_long_short_strategy_dca_both_sides():
     assert final_portfolio_value == expected_total_value
     # Mixed book remains -> non-zero position value magnitude
     assert abs(portfolio_summary["total_position_value"]) > 0.0
-
-

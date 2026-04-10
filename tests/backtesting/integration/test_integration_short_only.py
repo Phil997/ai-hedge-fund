@@ -236,7 +236,6 @@ def test_short_only_strategy_multiple_short_cover_cycles():
     assert abs(final_portfolio_value - final_cash) < 0.01
 
 
-
 def test_short_only_strategy_portfolio_rebalancing():
     """Rebalance across shorts: reduce AAPL short, add TSLA, then close AAPL and add to MSFT."""
 
@@ -400,4 +399,3 @@ def test_short_only_strategy_dollar_cost_averaging_on_short():
     assert final_portfolio_value == expected_total_value
     # Open short remains -> non-zero position value magnitude
     assert abs(portfolio_summary["total_position_value"]) > 0.0
-

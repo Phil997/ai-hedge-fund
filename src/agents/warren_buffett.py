@@ -84,21 +84,21 @@ def warren_buffett_agent(state: AgentState, agent_id: str = "warren_buffett_agen
 
         # Calculate total score without circle of competence (LLM will handle that)
         total_score = (
-                fundamental_analysis["score"] +
-                consistency_analysis["score"] +
-                moat_analysis["score"] +
-                mgmt_analysis["score"] +
-                pricing_power_analysis["score"] +
-                book_value_analysis["score"]
+            fundamental_analysis["score"]
+            + consistency_analysis["score"]
+            + moat_analysis["score"]
+            + mgmt_analysis["score"]
+            + pricing_power_analysis["score"]
+            + book_value_analysis["score"]
         )
 
         # Update max possible score calculation
         max_possible_score = (
-                10 +  # fundamental_analysis (ROE, debt, margins, current ratio)
-                moat_analysis["max_score"] +
-                mgmt_analysis["max_score"] +
-                5 +  # pricing_power (0-5)
-                5  # book_value_growth (0-5)
+            10  # fundamental_analysis (ROE, debt, margins, current ratio)
+            + moat_analysis["max_score"]
+            + mgmt_analysis["max_score"]
+            + 5  # pricing_power (0-5)
+            + 5  # book_value_growth (0-5)
         )
 
         # Add margin of safety analysis if we have both intrinsic value and current price
@@ -256,8 +256,8 @@ def analyze_moat(metrics: list) -> dict[str, any]:
 
     # 1. Return on Capital Consistency (Buffett's favorite moat indicator)
     historical_roes = [m.return_on_equity for m in metrics if m.return_on_equity is not None]
-    historical_roics = [m.return_on_invested_capital for m in metrics if
-                        hasattr(m, 'return_on_invested_capital') and m.return_on_invested_capital is not None]
+    [m.return_on_invested_capital for m in metrics if
+     hasattr(m, 'return_on_invested_capital') and m.return_on_invested_capital is not None]
 
     if len(historical_roes) >= 5:
         # Check for consistently high ROE (>15% for most periods)
@@ -268,7 +268,9 @@ def analyze_moat(metrics: list) -> dict[str, any]:
             moat_score += 2
             avg_roe = sum(historical_roes) / len(historical_roes)
             reasoning.append(
-                f"Excellent ROE consistency: {high_roe_periods}/{len(historical_roes)} periods >15% (avg: {avg_roe:.1%}) - indicates durable competitive advantage")
+                f"Excellent ROE consistency: {high_roe_periods}/{len(historical_roes)}"
+                f" periods >15% (avg: {avg_roe:.1%}) - indicates durable competitive advantage"
+            )
         elif roe_consistency >= 0.6:
             moat_score += 1
             reasoning.append(f"Good ROE performance: {high_roe_periods}/{len(historical_roes)} periods >15%")
@@ -351,22 +353,25 @@ def analyze_management_quality(financial_line_items: list) -> dict[str, any]:
     mgmt_score = 0
 
     latest = financial_line_items[0]
-    if hasattr(latest,
-               "issuance_or_purchase_of_equity_shares") and latest.issuance_or_purchase_of_equity_shares and latest.issuance_or_purchase_of_equity_shares < 0:
+    if (hasattr(latest, "issuance_or_purchase_of_equity_shares")
+            and latest.issuance_or_purchase_of_equity_shares
+            and latest.issuance_or_purchase_of_equity_shares < 0):
         # Negative means the company spent money on buybacks
         mgmt_score += 1
         reasoning.append("Company has been repurchasing shares (shareholder-friendly)")
 
-    if hasattr(latest,
-               "issuance_or_purchase_of_equity_shares") and latest.issuance_or_purchase_of_equity_shares and latest.issuance_or_purchase_of_equity_shares > 0:
+    if (hasattr(latest, "issuance_or_purchase_of_equity_shares")
+            and latest.issuance_or_purchase_of_equity_shares
+            and latest.issuance_or_purchase_of_equity_shares > 0):
         # Positive issuance means new shares => possible dilution
         reasoning.append("Recent common stock issuance (potential dilution)")
     else:
         reasoning.append("No significant new stock issuance detected")
 
     # Check for any dividends
-    if hasattr(latest,
-               "dividends_and_other_cash_distributions") and latest.dividends_and_other_cash_distributions and latest.dividends_and_other_cash_distributions < 0:
+    if (hasattr(latest, "dividends_and_other_cash_distributions")
+            and latest.dividends_and_other_cash_distributions
+            and latest.dividends_and_other_cash_distributions < 0):
         mgmt_score += 1
         reasoning.append("Company has a track record of paying dividends")
     else:
@@ -398,9 +403,12 @@ def calculate_owner_earnings(financial_line_items: list) -> dict[str, any]:
 
     if not all([net_income is not None, depreciation is not None, capex is not None]):
         missing = []
-        if net_income is None: missing.append("net income")
-        if depreciation is None: missing.append("depreciation")
-        if capex is None: missing.append("capital expenditure")
+        if net_income is None:
+            missing.append("net income")
+        if depreciation is None:
+            missing.append("depreciation")
+        if capex is None:
+            missing.append("capital expenditure")
         return {"owner_earnings": None, "details": [f"Missing components: {', '.join(missing)}"]}
 
     # Enhanced maintenance capex estimation using historical analysis
@@ -422,7 +430,7 @@ def calculate_owner_earnings(financial_line_items: list) -> dict[str, any]:
                 wc_previous = current_assets_previous - current_liab_previous
                 working_capital_change = wc_current - wc_previous
                 details.append(f"Working capital change: ${working_capital_change:,.0f}")
-        except:
+        except Exception:
             pass  # Skip working capital adjustment if data unavailable
 
     # Calculate owner earnings
@@ -495,8 +503,11 @@ def estimate_maintenance_capex(financial_line_items: list) -> float:
     # If we have historical data, use average capex ratio
     if len(capex_ratios) >= 3:
         avg_capex_ratio = sum(capex_ratios) / len(capex_ratios)
-        latest_revenue = financial_line_items[0].revenue if hasattr(financial_line_items[0], 'revenue') and \
-                                                            financial_line_items[0].revenue else 0
+        latest_revenue = (
+            financial_line_items[0].revenue
+            if hasattr(financial_line_items[0], 'revenue') and financial_line_items[0].revenue
+            else 0
+        )
         method_3 = avg_capex_ratio * latest_revenue if latest_revenue else 0
 
         # Use the median of the three approaches for conservatism
@@ -570,7 +581,9 @@ def calculate_intrinsic_value(financial_line_items: list) -> dict[str, any]:
 
     present_value = 0
     details.append(
-        f"Using three-stage DCF: Stage 1 ({stage1_growth:.1%}, {stage1_years}y), Stage 2 ({stage2_growth:.1%}, {stage2_years}y), Terminal ({terminal_growth:.1%})")
+        f"Using three-stage DCF: Stage 1 ({stage1_growth:.1%}, {stage1_years}y),"
+        f" Stage 2 ({stage2_growth:.1%}, {stage2_years}y), Terminal ({terminal_growth:.1%})"
+    )
 
     # Stage 1: Higher growth
     stage1_pv = 0

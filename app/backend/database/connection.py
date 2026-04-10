@@ -22,10 +22,11 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create Base class for models
 Base = declarative_base()
 
+
 # Dependency for FastAPI
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
-        db.close() 
+        db.close()

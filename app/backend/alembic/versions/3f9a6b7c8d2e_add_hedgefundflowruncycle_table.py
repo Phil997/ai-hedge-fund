@@ -18,14 +18,17 @@ depends_on = None
 def upgrade():
     # Get the database connection to check existing columns
     conn = op.get_bind()
-    
+
     # Check if columns already exist before adding them
     inspector = sa.inspect(conn)
     existing_columns = [col['name'] for col in inspector.get_columns('hedge_fund_flow_runs')]
-    
+
     # Add new columns to hedge_fund_flow_runs table only if they don't exist
     if 'trading_mode' not in existing_columns:
-        op.add_column('hedge_fund_flow_runs', sa.Column('trading_mode', sa.String(50), nullable=False, server_default='one-time'))
+        op.add_column(
+            'hedge_fund_flow_runs',
+            sa.Column('trading_mode', sa.String(50), nullable=False, server_default='one-time')
+        )
     if 'schedule' not in existing_columns:
         op.add_column('hedge_fund_flow_runs', sa.Column('schedule', sa.String(50), nullable=True))
     if 'duration' not in existing_columns:
@@ -34,7 +37,7 @@ def upgrade():
         op.add_column('hedge_fund_flow_runs', sa.Column('initial_portfolio', sa.JSON, nullable=True))
     if 'final_portfolio' not in existing_columns:
         op.add_column('hedge_fund_flow_runs', sa.Column('final_portfolio', sa.JSON, nullable=True))
-    
+
     # Create hedge_fund_flow_run_cycles table only if it doesn't exist
     existing_tables = inspector.get_table_names()
     if 'hedge_fund_flow_run_cycles' not in existing_tables:
@@ -59,7 +62,7 @@ def upgrade():
             sa.Column('trigger_reason', sa.String(100), nullable=True),
             sa.Column('market_conditions', sa.JSON, nullable=True),
         )
-        
+
         # Create indexes for the new table
         op.create_index('ix_hedge_fund_flow_run_cycles_flow_run_id', 'hedge_fund_flow_run_cycles', ['flow_run_id'])
         op.create_index('ix_hedge_fund_flow_run_cycles_cycle_number', 'hedge_fund_flow_run_cycles', ['cycle_number'])
@@ -72,7 +75,7 @@ def downgrade():
     conn = op.get_bind()
     inspector = sa.inspect(conn)
     existing_tables = inspector.get_table_names()
-    
+
     if 'hedge_fund_flow_run_cycles' in existing_tables:
         # Drop indexes if they exist
         try:
@@ -80,15 +83,15 @@ def downgrade():
             op.drop_index('ix_hedge_fund_flow_run_cycles_status', 'hedge_fund_flow_run_cycles')
             op.drop_index('ix_hedge_fund_flow_run_cycles_cycle_number', 'hedge_fund_flow_run_cycles')
             op.drop_index('ix_hedge_fund_flow_run_cycles_flow_run_id', 'hedge_fund_flow_run_cycles')
-        except:
+        except Exception:
             pass  # Index may not exist
-        
+
         # Drop hedge_fund_flow_run_cycles table
         op.drop_table('hedge_fund_flow_run_cycles')
-    
+
     # Check existing columns before dropping
     existing_columns = [col['name'] for col in inspector.get_columns('hedge_fund_flow_runs')]
-    
+
     # Remove columns from hedge_fund_flow_runs table only if they exist
     if 'final_portfolio' in existing_columns:
         op.drop_column('hedge_fund_flow_runs', 'final_portfolio')
@@ -99,4 +102,4 @@ def downgrade():
     if 'schedule' in existing_columns:
         op.drop_column('hedge_fund_flow_runs', 'schedule')
     if 'trading_mode' in existing_columns:
-        op.drop_column('hedge_fund_flow_runs', 'trading_mode') 
+        op.drop_column('hedge_fund_flow_runs', 'trading_mode')

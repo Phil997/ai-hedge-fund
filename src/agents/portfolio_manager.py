@@ -21,7 +21,7 @@ class PortfolioManagerOutput(BaseModel):
     decisions: dict[str, PortfolioDecision] = Field(description="Dictionary of ticker to trading decisions")
 
 
-##### Portfolio Management Agent #####
+# Portfolio Management Agent
 def portfolio_management_agent(state: AgentState, agent_id: str = "portfolio_manager"):
     """Makes final trading decisions and generates orders for multiple tickers"""
 
