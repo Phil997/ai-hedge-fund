@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict, Mapping
 from types import MappingProxyType
+from typing import Dict, Mapping
 
 from .types import PortfolioSnapshot, PositionState, TickerRealizedGains
 

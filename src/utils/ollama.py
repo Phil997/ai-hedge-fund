@@ -1,13 +1,15 @@
 """Utilities for working with Ollama models"""
 
+import os
 import platform
 import subprocess
-import requests
 import time
 from typing import List
+
 import questionary
+import requests
 from colorama import Fore, Style
-import os
+
 from . import docker
 
 # Constants
@@ -391,8 +393,8 @@ def delete_model(model_name: str) -> bool:
 
 # Add this at the end of the file for command-line usage
 if __name__ == "__main__":
-    import sys
     import argparse
+    import sys
 
     parser = argparse.ArgumentParser(description="Ollama model manager")
     parser.add_argument("--check-model", help="Check if model exists and download if needed")

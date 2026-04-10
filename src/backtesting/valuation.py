@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Dict, Mapping, Mapping as _MappingAny
+from typing import Dict
+from typing import Mapping
+from typing import Mapping as _MappingAny
 
 from .portfolio import Portfolio
 

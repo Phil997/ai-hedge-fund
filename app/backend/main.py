@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
-import asyncio
 
 from app.backend.routes import api_router
 from app.backend.database.connection import engine

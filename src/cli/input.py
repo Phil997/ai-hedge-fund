@@ -1,16 +1,22 @@
-import sys
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import argparse
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
 import questionary
 from colorama import Fore, Style
+from dateutil.relativedelta import relativedelta
 
+from src.llm.models import (
+    find_model_by_name,
+    get_model_info,
+    LLM_ORDER,
+    ModelProvider,
+    OLLAMA_LLM_ORDER,
+)
 from src.utils.analysts import ANALYST_ORDER
-from src.llm.models import LLM_ORDER, OLLAMA_LLM_ORDER, get_model_info, ModelProvider, find_model_by_name
 from src.utils.ollama import ensure_ollama_and_model
-
-from dataclasses import dataclass
-from typing import Optional
 
 
 def add_common_args(

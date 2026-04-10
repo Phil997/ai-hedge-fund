@@ -1,13 +1,15 @@
+import json
+
+from langchain_core.messages import HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel
+from typing_extensions import Literal
+
 from src.graph.state import AgentState, show_agent_reasoning
 from src.tools.api import get_financial_metrics, get_market_cap, search_line_items
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.messages import HumanMessage
-from pydantic import BaseModel
-import json
-from typing_extensions import Literal
-from src.utils.progress import progress
-from src.utils.llm import call_llm
 from src.utils.api_key import get_api_key_from_state
+from src.utils.llm import call_llm
+from src.utils.progress import progress
 
 
 class MohnishPabraiSignal(BaseModel):
@@ -229,7 +231,7 @@ def analyze_pabrai_valuation(financial_line_items: list, market_cap: float | Non
 
     # Asset-light tilt: lower capex intensity preferred
     if capex_vals and len(financial_line_items) >= 3:
-        revenue_vals = [getattr(li, "revenue", None) for li in financial_line_items]
+        [getattr(li, "revenue", None) for li in financial_line_items]
         capex_to_revenue = []
         for i, li in enumerate(financial_line_items):
             revenue = getattr(li, "revenue", None)

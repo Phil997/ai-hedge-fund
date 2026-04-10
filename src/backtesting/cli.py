@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import sys
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import argparse
+from datetime import datetime
 
-from colorama import Fore, Style, init
 import questionary
+from colorama import Fore, init, Style
+from dateutil.relativedelta import relativedelta
+
+from src.llm.models import get_model_info, LLM_ORDER, ModelProvider, OLLAMA_LLM_ORDER
+from src.main import run_hedge_fund
+from src.utils.analysts import ANALYST_ORDER
+from src.utils.ollama import ensure_ollama_and_model
 
 from .engine import BacktestEngine
-from src.llm.models import LLM_ORDER, OLLAMA_LLM_ORDER, get_model_info, ModelProvider
-from src.utils.analysts import ANALYST_ORDER
-from src.main import run_hedge_fund
-from src.utils.ollama import ensure_ollama_and_model
 
 
 def main() -> int:

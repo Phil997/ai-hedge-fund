@@ -1,9 +1,11 @@
 """Utilities for working with Ollama models in Docker environments"""
 
-import requests
 import time
-from colorama import Fore, Style
+
 import questionary
+import requests
+from colorama import Fore, Style
+
 
 def ensure_ollama_and_model(model_name: str, ollama_url: str) -> bool:
     """Ensure the Ollama model is available at the target Ollama endpoint."""

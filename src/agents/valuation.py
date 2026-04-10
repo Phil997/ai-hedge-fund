@@ -8,15 +8,14 @@ configurable weights.
 
 import json
 import statistics
+
 from langchain_core.messages import HumanMessage
+
 from src.graph.state import AgentState, show_agent_reasoning
-from src.utils.progress import progress
+from src.tools.api import get_financial_metrics, get_market_cap, search_line_items
 from src.utils.api_key import get_api_key_from_state
-from src.tools.api import (
-    get_financial_metrics,
-    get_market_cap,
-    search_line_items,
-)
+from src.utils.progress import progress
+
 
 def valuation_analyst_agent(state: AgentState, agent_id: str = "valuation_analyst_agent"):
     """Run valuation across tickers and write signals back to `state`."""

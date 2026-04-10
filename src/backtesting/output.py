@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import List, Mapping, Sequence
 
+from src.utils.display import format_backtest_row, print_backtest_results
+
 from .portfolio import Portfolio
 from .types import AgentOutput
-from src.utils.display import format_backtest_row, print_backtest_results
 from .valuation import compute_portfolio_summary
 
 
@@ -32,7 +33,7 @@ class OutputBuilder:
     ) -> List[list]:
         date_rows: List[list] = []
 
-        analyst_signals = agent_output.get("analyst_signals", {})
+        agent_output.get("analyst_signals", {})
         decisions = agent_output.get("decisions", {})
 
         for ticker in tickers:

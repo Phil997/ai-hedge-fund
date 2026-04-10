@@ -1,25 +1,26 @@
 import datetime
 import logging
 import os
+import time
+
 import pandas as pd
 import requests
-import time
 
 logger = logging.getLogger(__name__)
 
 from src.data.cache import get_cache
 from src.data.models import (
+    CompanyFactsResponse,
     CompanyNews,
     CompanyNewsResponse,
     FinancialMetrics,
     FinancialMetricsResponse,
-    Price,
-    PriceResponse,
-    LineItem,
-    LineItemResponse,
     InsiderTrade,
     InsiderTradeResponse,
-    CompanyFactsResponse,
+    LineItem,
+    LineItemResponse,
+    Price,
+    PriceResponse,
 )
 
 # Global cache instance

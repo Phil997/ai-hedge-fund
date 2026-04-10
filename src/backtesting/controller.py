@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Callable, Sequence, Dict, Any
+from typing import Any, Callable, Dict, Sequence
 
-from .types import AgentOutput, AgentDecisions, PortfolioSnapshot, ActionLiteral, Action
 from .portfolio import Portfolio
+from .types import Action, AgentDecisions, AgentOutput, PortfolioSnapshot
 
 
 class AgentController:

@@ -1,27 +1,27 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Sequence, Dict
+from typing import Dict, Sequence
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from .controller import AgentController
-from .trader import TradeExecutor
-from .metrics import PerformanceMetricsCalculator
-from .portfolio import Portfolio
-from .types import PerformanceMetrics, PortfolioValuePoint
-from .valuation import calculate_portfolio_value, compute_exposures
-from .output import OutputBuilder
-from .benchmarks import BenchmarkCalculator
-
 from src.tools.api import (
     get_company_news,
-    get_price_data,
-    get_prices,
     get_financial_metrics,
     get_insider_trades,
+    get_price_data,
+    get_prices,
 )
+
+from .benchmarks import BenchmarkCalculator
+from .controller import AgentController
+from .metrics import PerformanceMetricsCalculator
+from .output import OutputBuilder
+from .portfolio import Portfolio
+from .trader import TradeExecutor
+from .types import PerformanceMetrics, PortfolioValuePoint
+from .valuation import calculate_portfolio_value, compute_exposures
 
 
 class BacktestEngine:
