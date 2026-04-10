@@ -56,7 +56,7 @@ cd app && npm install && npm run setup
 ```
 
 **That's it!** These scripts will:
-1. Check for required dependencies (Node.js, Python, Poetry)
+1. Check for required dependencies (Node.js, Python, UV)
 2. Install all dependencies automatically
 3. Start both frontend and backend services
 4. **Automatically open your web browser** to the application
@@ -64,7 +64,7 @@ cd app && npm install && npm run setup
 **Requirements:**
 - [Node.js](https://nodejs.org/) (includes npm)
 - [Python 3](https://python.org/)
-- [Poetry](https://python-poetry.org/)
+- [UV](https://github.com/astral-sh/uv)
 
 **After running, you can access:**
 - Frontend (Web Interface): http://localhost:5173
@@ -80,7 +80,7 @@ If you prefer to set up each component manually or need more control:
 ### Prerequisites
 
 - Node.js and npm for the frontend
-- Python 3.8+ and Poetry for the backend
+- Python 3.8+ and UV for the backend
 
 ### Installation
 
@@ -108,27 +108,20 @@ GROQ_API_KEY=your-groq-api-key
 FINANCIAL_DATASETS_API_KEY=your-financial-datasets-api-key
 ```
 
-4. Install Poetry (if not already installed):
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-5. Install root project dependencies:
+4. Install root project dependencies:
 ```bash
 # From the root directory
-poetry install
+uv sync
 ```
 
-6. Install backend app dependencies:
+5. Install backend app dependencies:
 ```bash
 # Navigate to the backend directory
 cd app/backend
-pip install -r requirements.txt  # If there's a requirements.txt file
-# OR
-poetry install  # If there's a pyproject.toml in the backend directory
+uv sync  # Install dependencies from pyproject.toml
 ```
 
-7. Install frontend app dependencies:
+6. Install frontend app dependencies:
 ```bash
 cd app/frontend
 npm install  # or pnpm install or yarn install
@@ -140,7 +133,7 @@ npm install  # or pnpm install or yarn install
 ```bash
 # In one terminal, from the backend directory
 cd app/backend
-poetry run uvicorn main:app --reload
+uv run uvicorn main:app --reload
 ```
 
 2. Start the frontend application:
@@ -185,23 +178,22 @@ Command not found: uvicorn
 ```
 
 **Solution:**
-1. **Clean Poetry environment:**
+1. **Sync dependencies:**
    ```bash
    cd app/backend
-   poetry env remove --all
-   poetry install
+   uv sync
    ```
 
 2. **Or force reinstall:**
    ```bash
    cd app/backend
-   poetry install --sync
+   rm -rf .venv && uv sync
    ```
 
 3. **Verify installation:**
    ```bash
    cd app/backend
-   poetry run python -c "import uvicorn; import fastapi"
+   uv run python -c "import uvicorn; import fastapi"
    ```
 
 #### Python Version Issues

@@ -35,95 +35,68 @@ if %errorlevel% neq 0 (
     )
 )
 
-REM Check Poetry
-where poetry >nul 2>&1
+REM Check UV
+where uv >nul 2>&1
 if %errorlevel% neq 0 (
-    REM Try alternative Poetry locations
-    if exist "%APPDATA%\Python\Scripts\poetry.exe" (
-        echo %INFO% Poetry found in user directory. Adding to PATH temporarily...
+    REM Try alternative UV locations
+    if exist "%LOCALAPPDATA%\uv\uv.exe" (
+        echo %INFO% UV found in user directory. Adding to PATH temporarily...
+        set "PATH=%LOCALAPPDATA%\uv;%PATH%"
+        goto :uv_found
+    )
+    if exist "%APPDATA%\Python\Scripts\uv.exe" (
+        echo %INFO% UV found in user directory. Adding to PATH temporarily...
         set "PATH=%APPDATA%\Python\Scripts;%PATH%"
-        goto :poetry_found
+        goto :uv_found
     )
-    if exist "%APPDATA%\Python\Python311\Scripts\poetry.exe" (
-        echo %INFO% Poetry found in Python311 user directory. Adding to PATH temporarily...
-        set "PATH=%APPDATA%\Python\Python311\Scripts;%PATH%"
-        goto :poetry_found
-    )
-    echo %WARNING% Poetry is not installed.
-    echo %INFO% Poetry is required to manage Python dependencies for this project.
+    echo %WARNING% UV is not installed.
+    echo %INFO% UV is required to manage Python dependencies for this project.
     echo.
-    set /p install_poetry="Would you like to install Poetry automatically? (y/N): "
-    if /i "%install_poetry%"=="y" (
-        echo %INFO% Installing Poetry using official installer...
+    set /p install_uv="Would you like to install UV automatically? (y/N): "
+    if /i "%install_uv%"=="y" (
+        echo %INFO% Installing UV using pip...
         
-        REM Download the installer script first, then run it
-        curl -sSL https://install.python-poetry.org -o "%TEMP%\install-poetry.py"
+        python -m pip install uv
         if %errorlevel% neq 0 (
-            echo %WARNING% Failed to download Poetry installer. Trying alternative method...
-            python -m pip install --user poetry
-            if %errorlevel% neq 0 (
-                echo %ERROR% Failed to install Poetry automatically.
-                echo %INFO% This is likely due to Windows permission restrictions or network issues.
-                echo.
-                echo %INFO% SOLUTION: Please try one of these options:
-                echo %INFO% 1. Run this script as Administrator
-                echo %INFO% 2. Manual install: curl -sSL https://install.python-poetry.org -o install-poetry.py
-                echo %INFO% 3. Then run: python install-poetry.py
-                echo.
-                pause
-                exit /b 1
-            )
-        ) else (
-            REM Run the downloaded installer
-            python "%TEMP%\install-poetry.py"
-            if %errorlevel% neq 0 (
-                echo %ERROR% Failed to install Poetry with official installer.
-                echo %INFO% Trying alternative method with pip...
-                python -m pip install --user poetry
-                if %errorlevel% neq 0 (
-                    echo %ERROR% Failed to install Poetry automatically.
-                    echo %INFO% This is likely due to Windows permission restrictions or network issues.
-                    echo.
-                    echo %INFO% SOLUTION: Please try one of these options:
-                    echo %INFO% 1. Run this script as Administrator
-                    echo %INFO% 2. Manual install: curl -sSL https://install.python-poetry.org -o install-poetry.py
-                    echo %INFO% 3. Then run: python install-poetry.py
-                    echo.
-                    pause
-                    exit /b 1
-                )
-            )
-            REM Clean up the temporary installer file
-            del "%TEMP%\install-poetry.py" >nul 2>&1
+            echo %ERROR% Failed to install UV automatically.
+            echo %INFO% This is likely due to Windows permission restrictions or network issues.
+            echo.
+            echo %INFO% SOLUTION: Please try one of these options:
+            echo %INFO% 1. Run this script as Administrator
+            echo %INFO% 2. Manual install: pip install uv
+            echo %INFO% 3. Or follow: https://github.com/astral-sh/uv
+            echo.
+            pause
+            exit /b 1
         )
-        echo %SUCCESS% Poetry installed successfully!
+        echo %SUCCESS% UV installed successfully!
         echo %INFO% Refreshing environment...
         call refreshenv >nul 2>&1 || echo %WARNING% Could not refresh environment.
         
-        REM Check if Poetry is now available
-        where poetry >nul 2>&1
+        REM Check if UV is now available
+        where uv >nul 2>&1
         if %errorlevel% neq 0 (
-            echo %WARNING% Poetry was installed but is not yet available in PATH.
-            echo %INFO% You may need to restart your terminal or add Poetry to your PATH.
-            echo %INFO% Poetry is typically installed to: %APPDATA%\Python\Scripts
+            echo %WARNING% UV was installed but is not yet available in PATH.
+            echo %INFO% You may need to restart your terminal or add UV to your PATH.
+            echo %INFO% UV is typically installed to: %APPDATA%\Python\Scripts
             echo %INFO% You can also try running the script again after restarting your terminal.
             pause
             exit /b 1
         )
-        echo %SUCCESS% Poetry is now available and ready to use!
+        echo %SUCCESS% UV is now available and ready to use!
     ) else (
-        echo %ERROR% Poetry is required to run this application.
-        echo %ERROR% Please install Poetry manually using one of these methods:
-        echo %INFO% 1. Download installer: curl -sSL https://install.python-poetry.org -o install-poetry.py
-        echo %INFO% 2. Run installer: python install-poetry.py
+        echo %ERROR% UV is required to run this application.
+        echo %ERROR% Please install UV manually using one of these methods:
+        echo %INFO% 1. Install via pip: pip install uv
+        echo %INFO% 2. Or follow: https://github.com/astral-sh/uv
         echo %INFO% 3. Restart your terminal and run this script again
         pause
         exit /b 1
     )
 )
 
-:poetry_found
-echo %SUCCESS% Poetry is available!
+:uv_found
+echo %SUCCESS% UV is available!
 
 REM Ensure correct working directory
 if not exist "frontend" (
@@ -181,12 +154,12 @@ REM Install backend dependencies
 echo %INFO% Installing backend dependencies...
 cd backend
 
-poetry run python -c "import uvicorn; import fastapi" >nul 2>&1
+uv run python -c "import uvicorn; import fastapi" >nul 2>&1
 if %errorlevel% equ 0 (
     echo %SUCCESS% Backend dependencies already installed
 ) else (
-    echo %INFO% Installing Python dependencies with Poetry...
-    poetry install
+    echo %INFO% Installing Python dependencies with UV...
+    uv sync
     if %errorlevel% neq 0 (
         echo %ERROR% Failed to install backend dependencies
         pause
@@ -226,7 +199,7 @@ REM Start backend
 echo %INFO% Launching backend server...
 REM Run from project root to ensure proper Python imports
 cd ..
-start /b poetry run uvicorn app.backend.main:app --reload --host 127.0.0.1 --port 8000
+start /b uv run uvicorn app.backend.main:app --reload --host 127.0.0.1 --port 8000
 cd app
 
 timeout /t 3 /nobreak >nul

@@ -11,7 +11,7 @@ This backend is designed to work with a future frontend application that will al
 
 ## Installation
 
-### Using Poetry
+### Using UV
 
 1. Clone the repository:
 ```bash
@@ -19,15 +19,10 @@ git clone https://github.com/virattt/ai-hedge-fund.git
 cd ai-hedge-fund
 ```
 
-2. Install Poetry (if not already installed):
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-3. Install dependencies:
+2. Install dependencies:
 ```bash
 # From the root directory
-poetry install
+uv sync
 ```
 
 4. Set up your environment variables:
@@ -57,7 +52,7 @@ To run the development server:
 cd app/backend
 
 # Start the FastAPI server with uvicorn
-poetry run uvicorn main:app --reload
+uv run uvicorn main:app --reload
 ```
 
 This will start the FastAPI server with hot-reloading enabled.

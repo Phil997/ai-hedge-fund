@@ -1,0 +1,8 @@
+[flake8]
+ignore =
+        F722,
+        # pydantic with annotations (pyflakes) to PEP 484
+max-line-length = 120
+exclude = .venv/*, .venv-opencode/*, .venv-claudefor/*,
+max-complexity = 10
+extend-ignore = C901, E203, W503, W504
